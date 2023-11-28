@@ -118,7 +118,7 @@ namespace Projeto1
                                               mtbsenha.Text);
 
                 UsuarioDAO clidados = new UsuarioDAO();
-                clidados.InsertUsuario(usuario);
+                clidados.UpdateCliente(usuario);
 
                 MessageBox.Show("OS DADOS FORAM EDITADOS ",
                 "METFLIX",
