@@ -33,23 +33,6 @@ namespace Projeto1
             Cvc = cvc;
             Senha = senha;
         }
-
-        public Usuario(
-            string nome,
-          string emai,
-          string cpf,
-          string ncartao,
-          string cvc,
-          string senha)
-        {
-
-            Nome = nome;
-            Email = emai;
-            Cpf = cpf;
-            Ncartao = ncartao;
-            Cvc = cvc;
-            Senha = senha;
-        }
         public int Id
         {
             set { _id = value; }
@@ -57,32 +40,50 @@ namespace Projeto1
         }
             public string Nome
         {
-            set { _nome = value; }
+            set {
+                if(string.IsNullOrEmpty(value))
+                    throw new ArgumentException("CAMPO NOME ESTÁ VAZIO"); 
+                _nome = value; }
             get { return _nome; }
         }
              public string Email
         {
-            set { _email = value; }
+            set {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException("CAMPO EMAIL ESTÁ VAZIO");
+                _email = value; }
             get { return _email; }
         }
              public string Cpf
         {
-            set { _cpf = value; }
+            set {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException("CAMPO CPF ESTÁ VAZIO"); 
+                _cpf = value; }
             get { return _cpf; }
         }
             public string Ncartao
         {
-            set { _ncartao = value; }
+            set {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException("CAMPO NUMERO DO CARTÃO ESTÁ VAZIO");
+                _ncartao = value; }
             get { return _ncartao; }
         }
             public string Cvc
         {
-            set { _cvc = value; }
+            set {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException("CAMPO CVV ESTÁ VAZIO");
+                _cvc = value; }
             get { return _cvc; }
         }
             public string Senha
         {
-            set { _senha = value; }
+            set {
+                if (string.IsNullOrEmpty(value))
+                    throw new ArgumentException("CAMPO SENHA ESTÁ VAZIO");
+                _senha = value; }
             get { return _senha; }
         }
 

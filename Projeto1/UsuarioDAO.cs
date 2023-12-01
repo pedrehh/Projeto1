@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -19,7 +20,7 @@ namespace Projeto1
             sqlCom.Connection = conn.ReturnConnection();
             sqlCom.CommandText = "SELECT * FROM METFLIX";
 
-            List<Usuario> usuarios = new List<Usuario>();
+            List<Usuario> Usuarios = new List<Usuario>();
 
             try
             {
@@ -39,12 +40,12 @@ namespace Projeto1
                    (string)dr["senha"]
                    );
 
-                    usuarios.Add(objeto);
+                    Usuarios.Add(objeto);
 
                 }
                 dr.Close();
 
-                return usuarios;//retornar a lista 
+                return Usuarios;//retornar a lista 
             }
             catch (Exception err)
             {
@@ -57,44 +58,46 @@ namespace Projeto1
             return null;
         }
 
-        public void UpdateCliente(Usuario usuario)
+        public void UpdateCliente(Usuario Usuario)
         {
             Conection connection = new Conection();
             SqlCommand sqlCommand = new SqlCommand();
 
             sqlCommand.Connection = connection.ReturnConnection();
-            sqlCommand.CommandText = @"UPDATE emprestimo SET 
-             NomedoLivro = @Livro,
-             Autor    = @Autor,
-             Tempo    = @Tempo, 
-             Nome     = @Nome,
-             CPF      = @CPF,
-             telefone = @telefone
+            sqlCommand.CommandText = @"UPDATE METFLIX SET 
+             nome = @nome,
+             email = @email,
+             cpf = @cpf, 
+             ncartao = @ncartao,
+             cvc = @cvc,
+             senha = @senha
              WHERE id = @id";
 
-            sqlCommand.Parameters.AddWithValue("@nome", usuario.Nome);
-            sqlCommand.Parameters.AddWithValue("@email", usuario.Email);
-            sqlCommand.Parameters.AddWithValue("@cpf", usuario.Cpf);
-            sqlCommand.Parameters.AddWithValue("@ncartao", usuario.Ncartao);
-            sqlCommand.Parameters.AddWithValue("@cvc", usuario.Cvc);
-            sqlCommand.Parameters.AddWithValue("@id",usuario.Id);
+            sqlCommand.Parameters.AddWithValue("@nome", Usuario.Nome);
+            sqlCommand.Parameters.AddWithValue("@email", Usuario.Email);
+            sqlCommand.Parameters.AddWithValue("@cpf", Usuario.Cpf);
+            sqlCommand.Parameters.AddWithValue("@ncartao", Usuario.Ncartao);
+            sqlCommand.Parameters.AddWithValue("@cvc", Usuario.Cvc);
+            sqlCommand.Parameters.AddWithValue("@senha", Criptografar(Usuario.Senha));
+            sqlCommand.Parameters.AddWithValue("@id",Usuario.Id);
 
             sqlCommand.ExecuteNonQuery();
         }
 
-        public void InsertUsuario(Usuario usuario)
+        public void InsertUsuario(Usuario Usuario)
         {
             Conection connection = new Conection();
             SqlCommand sqlCommand = new SqlCommand();
 
             sqlCommand.Connection = connection.ReturnConnection();
-            sqlCommand.CommandText = @"INSERT INTO emprestimo VALUES (@nome, @email, @cpf, @ncartao, @cvc, @senha)";
+            sqlCommand.CommandText = @"INSERT INTO METFLIX VALUES (@nome, @email, @cpf, @ncartao, @cvc, @senha)";
 
-            sqlCommand.Parameters.AddWithValue("@nome", usuario.Nome);
-            sqlCommand.Parameters.AddWithValue("@email", usuario.Email);
-            sqlCommand.Parameters.AddWithValue("@cpf", usuario.Cpf);
-            sqlCommand.Parameters.AddWithValue("@ncartao", usuario.Ncartao);
-            sqlCommand.Parameters.AddWithValue("@cvc", usuario.Cvc);
+            sqlCommand.Parameters.AddWithValue("@nome", Usuario.Nome);
+            sqlCommand.Parameters.AddWithValue("@email", Usuario.Email);
+            sqlCommand.Parameters.AddWithValue("@cpf", Usuario.Cpf);
+            sqlCommand.Parameters.AddWithValue("@ncartao", Usuario.Ncartao);
+            sqlCommand.Parameters.AddWithValue("@cvc", Usuario.Cvc);
+            sqlCommand.Parameters.AddWithValue("@senha", Criptografar(Usuario.Senha));
 
             sqlCommand.ExecuteNonQuery();
 
@@ -105,7 +108,7 @@ namespace Projeto1
             SqlCommand sqlCommand = new SqlCommand();
 
             sqlCommand.Connection = connection.ReturnConnection();
-            sqlCommand.CommandText = @"DELETE FROM Usuarios WHERE id = @id";
+            sqlCommand.CommandText = @"DELETE FROM METFLIX WHERE id = @id";
             sqlCommand.Parameters.AddWithValue("@id", id);
 
             try
@@ -123,6 +126,21 @@ namespace Projeto1
             }
 
 
+        }
+        public static string Criptografar(string input)
+        {
+            // Calcular o Hash
+            MD5 md5 = System.Security.Cryptography.MD5.Create();
+            byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(input);
+            byte[] hash = md5.ComputeHash(inputBytes);
+
+            // Converter byte array para string hexadecimal
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < hash.Length; i++)
+            {
+                sb.Append(hash[i].ToString("X2"));
+            }
+            return sb.ToString();
         }
     }
 }
